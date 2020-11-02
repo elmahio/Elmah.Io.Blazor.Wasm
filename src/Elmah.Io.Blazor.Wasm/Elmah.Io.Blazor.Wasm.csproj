@@ -26,4 +26,8 @@
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="images\icon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
 </Project>
