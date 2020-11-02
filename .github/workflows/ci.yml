@@ -26,7 +26,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Pack .NET Core tool
+    - name: Pack
       run: dotnet pack --configuration Release src/Elmah.Io.Blazor.Wasm/Elmah.Io.Blazor.Wasm.csproj /p:Version=3.0.${{ github.run_number }}-pre
 
     - name: Push to nuget.org
