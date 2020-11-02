@@ -1,0 +1,9 @@
+﻿@page "/DivideByZeroError"
+
+@code {
+    protected override void OnInitialized()
+    {
+        var zero = 0;
+        var equation = 1 / zero;
+    }
+}
