@@ -23,11 +23,10 @@ namespace Elmah.Io.Blazor.Wasm
         /// <param name="configureOptions"></param>
         public static ILoggingBuilder AddElmahIo(this ILoggingBuilder loggingBuilder, Action<ElmahIoBlazorOptions> configure)
         {
-            loggingBuilder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://api.elmah.io") });
             loggingBuilder.Services.Configure(configure);
             loggingBuilder.Services.AddSingleton<ILoggerProvider, ElmahIoLoggerProvider>(services =>
             {
-                var httpClient = services.GetService<HttpClient>();
+                var httpClient = new HttpClient { BaseAddress = new Uri("https://api.elmah.io") };
                 var options = services.GetService<IOptions<ElmahIoBlazorOptions>>();
                 return new ElmahIoLoggerProvider(httpClient, options);
             });
