@@ -57,7 +57,7 @@ namespace Elmah.Io.Blazor.Wasm
                 new
                 {
                     dateTime = DateTime.UtcNow,
-                    detail = exception.StackTrace,
+                    detail = exception?.StackTrace,
                     type = baseException?.GetType().FullName,
                     title = formatter(state, exception),
                     data = exception?.ToDataList(),
