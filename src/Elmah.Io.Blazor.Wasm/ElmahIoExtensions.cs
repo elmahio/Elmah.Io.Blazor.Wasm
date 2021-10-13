@@ -19,8 +19,6 @@ namespace Elmah.Io.Blazor.Wasm
         /// <summary>
         /// Add elmah.io with the specified options.
         /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configureOptions"></param>
         public static ILoggingBuilder AddElmahIo(this ILoggingBuilder loggingBuilder, Action<ElmahIoBlazorOptions> configure)
         {
             loggingBuilder.Services.Configure(configure);
