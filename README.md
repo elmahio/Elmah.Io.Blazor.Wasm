@@ -1,6 +1,6 @@
 # Elmah.Io.Blazor.Wasm
 
-[![Build status](https://github.com/elmahio/Elmah.Io.Blazor.Wasm/workflows/CI/badge.svg)](https://github.com/elmahio/Elmah.Io.Blazor.Wasm/workflows/CI/badge.svg) [![NuGet Version](https://img.shields.io/nuget/v/Elmah.Io.Blazor.Wasm.svg?style=flat)](https://www.nuget.org/packages/Elmah.Io.Blazor.Wasm/)
+[![Build status](https://github.com/elmahio/Elmah.Io.Blazor.Wasm/workflows/CI/badge.svg)](https://github.com/elmahio/Elmah.Io.Blazor.Wasm/actions/workflows/ci.yml) [![NuGet Version](https://img.shields.io/nuget/v/Elmah.Io.Blazor.Wasm.svg?style=flat)](https://www.nuget.org/packages/Elmah.Io.Blazor.Wasm/)
 
 Log to [elmah.io](https://elmah.io/) from Blazor WebAssembly.
 
