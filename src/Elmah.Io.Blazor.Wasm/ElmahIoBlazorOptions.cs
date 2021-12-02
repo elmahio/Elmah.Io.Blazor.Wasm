@@ -16,5 +16,10 @@ namespace Elmah.Io.Blazor.Wasm
         /// The id of the log to send messages to.
         /// </summary>
         public Guid LogId { get; set; }
+
+        /// <summary>
+        /// An application name to put on all messages.
+        /// </summary>
+        public string Application { get; set; }
     }
 }
