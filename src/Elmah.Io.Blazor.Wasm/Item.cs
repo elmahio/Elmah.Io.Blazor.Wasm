@@ -19,7 +19,7 @@ namespace Elmah.Io.Blazor.Wasm
         /// </summary>
         /// <param name="key">The key of the item.</param>
         /// <param name="value">The value of the item.</param>
-        public Item(string key = default(string), string value = default(string))
+        public Item(string key = default, string value = default)
         {
             Key = key;
             Value = value;
