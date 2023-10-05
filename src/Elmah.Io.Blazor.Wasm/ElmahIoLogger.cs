@@ -44,20 +44,27 @@ namespace Elmah.Io.Blazor.Wasm
         {
             var baseException = exception?.GetBaseException();
 
-            httpClient.PostAsJsonAsync(
-                $"https://api.elmah.io/v3/messages/{options.LogId}?api_key={options.ApiKey}",
-                new
-                {
-                    dateTime = DateTime.UtcNow,
-                    detail = exception?.ToString(),
-                    type = baseException?.GetType().FullName,
-                    title = formatter(state, exception),
-                    data = Data(exception),
-                    severity = LogLevelToSeverity(logLevel),
-                    source = baseException?.Source,
-                    hostname = Environment.MachineName,
-                    application = options.Application,
-                });
+            var createMessage = new CreateMessage
+            {
+                DateTime = DateTime.UtcNow,
+                Detail = exception?.ToString(),
+                Type = baseException?.GetType().FullName,
+                Title = formatter(state, exception),
+                Data = Data(exception),
+                Severity = LogLevelToSeverity(logLevel),
+                Source = baseException?.Source,
+                Hostname = Environment.MachineName,
+                Application = options.Application,
+            };
+
+            if (options.OnFilter != null && options.OnFilter(createMessage))
+            {
+                return;
+            }
+
+            options.OnMessage?.Invoke(createMessage);
+
+            httpClient.PostAsJsonAsync($"https://api.elmah.io/v3/messages/{options.LogId}?api_key={options.ApiKey}", createMessage);
         }
 
         private List<Item> Data(Exception exception)

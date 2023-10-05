@@ -15,8 +15,20 @@ builder.Logging.AddElmahIo(o =>
     o.ApiKey = "API_KEY";
     o.LogId = new Guid("LOG_ID");
 
-    // Optional application name to set on all messages
+    // Optional application name to set on all messages.
     //o.Application = "Blazor WASM 6.0 elmah.io sample";
+
+    // Optional OnMessage callback that can be used to decorate messages before sent to elmah.io.
+    //o.OnMessage = msg =>
+    //{
+    //    msg.Version = "42";
+    //};
+
+    // Optional OnFilter callback that can be used to ignore log messages when matching specific conditions.
+    //o.OnFilter = msg =>
+    //{
+    //    return msg.Detail != null && msg.Detail.Contains("Attempted");
+    //};
 });
 
 await builder.Build().RunAsync();
