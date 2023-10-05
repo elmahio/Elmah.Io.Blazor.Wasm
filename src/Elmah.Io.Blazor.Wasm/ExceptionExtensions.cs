@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Text.Json;
 
 namespace Elmah.Io.Blazor.Wasm
 {
@@ -18,77 +21,161 @@ namespace Elmah.Io.Blazor.Wasm
         {
             if (exception == null) return null;
 
-            var result = new List<Item>();
-            var e = exception;
-            while (e != null)
+            var result = exception.Iterate();
+            var dataItems = new List<Item>(result.Items)
             {
-                var data = e
-                    .Data
-                    .Keys
-                    .Cast<object>()
-                    .Where(k => !string.IsNullOrWhiteSpace(k.ToString()))
-                    .Select(k => new Item { Key = k.ToString(), Value = Value(e.Data, k) })
-                    .ToList();
-                if (data != null && data.Count() > 0)
-                {
-                    result.AddRange(data);
-                }
+                new Item("X-ELMAHIO-EXCEPTIONINSPECTOR", JsonSerializer.Serialize(result.Exception)),
+                new Item("X-ELMAHIO-FRAMEWORKDESCRIPTION", System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription)
+            };
+            return dataItems;
+        }
 
-                if (!string.IsNullOrWhiteSpace(e.HelpLink))
-                {
-                    result.Add(new Item { Key = "Exception.HelpLink", Value = e.HelpLink });
-                }
+        private static IterateExceptionResult Iterate(this Exception exception, int level = 1)
+        {
+            // Don't iterate more than 10 nested exceptions
+            if (level > 10) return null;
 
-                var exceptionSpecificItems = ExceptionSpecificItems(e);
-                if (exceptionSpecificItems.Count > 0)
-                {
-                    result.AddRange(exceptionSpecificItems);
-                }
+            var exceptionModel = new ExceptionModel();
+            exceptionModel.Message = exception.Message;
+            exceptionModel.Type = exception.GetType().FullName;
+#if NETSTANDARD2_0 || NETSTANDARD2_0_OR_GREATER || NET45 || NET46 || NET461
+            exceptionModel.TargetSite = exception.TargetSite?.ToString();
+#endif
+            exceptionModel.Source = exception.Source;
+            exceptionModel.HResult = exception.HResult;
+            exceptionModel.StackTrace = exception.StackTrace;
+            var result = new List<Item>();
 
-                e = e.InnerException;
+            var input = exception
+                .Data
+                .Keys
+                .Cast<object>()
+                .Where(k => !string.IsNullOrWhiteSpace(k.ToString()));
+
+            if (input != null && input.Count() > 0)
+            {
+                exceptionModel.Data = input.Select(i => new KeyValuePair<string, string>(i.ToString(), Value(exception.Data, i))).ToList();
+                result.AddRange(input
+                    .Select(k => new Item { Key = exception.ItemName(k.ToString()), Value = Value(exception.Data, k) })
+                    .ToList());
             }
 
-            return result;
+            if (!string.IsNullOrWhiteSpace(exception.HelpLink))
+            {
+                result.Add(new Item { Key = exception.ItemName(nameof(exception.HelpLink)), Value = exception.HelpLink });
+                exceptionModel.HelpLink = exception.HelpLink;
+            }
+
+            var exceptionSpecificItems = ExceptionSpecificItems(exception, exceptionModel);
+            if (exceptionSpecificItems.Count > 0)
+            {
+                result.AddRange(exceptionSpecificItems);
+            }
+
+            if (exception is AggregateException ae)
+            {
+                foreach (var innerException in ae.InnerExceptions)
+                {
+                    var innerResult = innerException.Iterate(1 + level);
+                    if (innerResult?.Items.Count > 0)
+                    {
+                        result.AddRange(innerResult.Items);
+                    }
+
+                    if (innerResult?.Exception != null)
+                    {
+                        exceptionModel.Inners.Add(innerResult.Exception);
+                    }
+                }
+            }
+            else if (exception.InnerException != null)
+            {
+                var innerResult = exception.InnerException.Iterate(1 + level);
+                if (innerResult?.Items.Count > 0)
+                {
+                    result.AddRange(innerResult.Items);
+                }
+
+                if (innerResult?.Exception != null)
+                {
+                    exceptionModel.Inners.Add(innerResult.Exception);
+                }
+            }
+
+            return new IterateExceptionResult
+            {
+                Items = result,
+                Exception = exceptionModel,
+            };
         }
 
         /// <summary>
         /// Helper method to extract items from different known exception types and their properties.
         /// </summary>
-        private static List<Item> ExceptionSpecificItems(Exception e)
+        /// <summary>
+        /// Helper method to extract items from different known exception types and their properties.
+        /// </summary>
+        private static List<Item> ExceptionSpecificItems(Exception e, ExceptionModel ex)
         {
             var result = new List<Item>();
             if (e is ArgumentException ae)
             {
                 if (!string.IsNullOrWhiteSpace(ae.ParamName))
+                {
                     result.Add(new Item { Key = ae.ItemName(nameof(ae.ParamName)), Value = ae.ParamName });
+                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(ae.ParamName), ae.ParamName));
+                }
             }
 
             if (e is BadImageFormatException bife)
             {
                 if (!string.IsNullOrWhiteSpace(bife.FileName))
+                {
                     result.Add(new Item { Key = bife.ItemName(nameof(bife.FileName)), Value = bife.FileName });
+                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(bife.FileName), bife.FileName));
+                }
                 if (!string.IsNullOrWhiteSpace(bife.FusionLog))
+                {
                     result.Add(new Item { Key = bife.ItemName(nameof(bife.FusionLog)), Value = bife.FusionLog });
+                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(bife.FusionLog), bife.FusionLog));
+                }
+            }
+
+            if (e is TaskCanceledException tce)
+            {
+                if (tce.CancellationToken != CancellationToken.None)
+                {
+                    result.Add(new Item { Key = tce.ItemName(nameof(tce.CancellationToken.IsCancellationRequested)), Value = tce.CancellationToken.IsCancellationRequested.ToString() });
+                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(tce.CancellationToken.IsCancellationRequested), tce.CancellationToken.IsCancellationRequested.ToString()));
+                }
             }
 
             if (e is FileNotFoundException fnfe)
             {
                 if (!string.IsNullOrWhiteSpace(fnfe.FileName))
+                {
                     result.Add(new Item { Key = fnfe.ItemName(nameof(fnfe.FileName)), Value = fnfe.FileName });
+                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(fnfe.FileName), fnfe.FileName));
+                }
                 if (!string.IsNullOrWhiteSpace(fnfe.FusionLog))
+                {
                     result.Add(new Item { Key = fnfe.ItemName(nameof(fnfe.FusionLog)), Value = fnfe.FusionLog });
+                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(fnfe.FusionLog), fnfe.FusionLog));
+                }
             }
 
             if (e is System.Net.Sockets.SocketException se)
             {
                 result.Add(new Item { Key = se.ItemName(nameof(se.SocketErrorCode)), Value = se.SocketErrorCode.ToString() });
+                ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(se.SocketErrorCode), se.SocketErrorCode.ToString()));
                 result.Add(new Item { Key = se.ItemName(nameof(se.ErrorCode)), Value = se.ErrorCode.ToString() });
+                ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(se.ErrorCode), se.ErrorCode.ToString()));
             }
 
             if (e is System.Net.WebException we)
             {
-                string ss = ItemName(we, nameof(we.Status));
                 result.Add(new Item { Key = we.ItemName(nameof(we.Status)), Value = we.Status.ToString() });
+                ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(we.Status), we.Status.ToString()));
             }
 
             return result;
@@ -107,6 +194,26 @@ namespace Elmah.Io.Blazor.Wasm
             var value = data[key];
             if (value == null) return string.Empty;
             return value.ToString();
+        }
+
+        class ExceptionModel
+        {
+            public string Type { get; set; }
+            public string Message { get; set; }
+            public string StackTrace { get; set; }
+            public string HelpLink { get; set; }
+            public int HResult { get; set; }
+            public string TargetSite { get; set; }
+            public string Source { get; set; }
+            public List<ExceptionModel> Inners { get; set; } = new List<ExceptionModel>();
+            public List<KeyValuePair<string, string>> Data { get; set; } = new List<KeyValuePair<string, string>>();
+            public List<KeyValuePair<string, string>> ExceptionSpecific { get; set; } = new List<KeyValuePair<string, string>>();
+        }
+
+        class IterateExceptionResult
+        {
+            public ExceptionModel Exception { get; set; }
+            public List<Item> Items { get; set; }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 
@@ -51,12 +52,19 @@ namespace Elmah.Io.Blazor.Wasm
                     detail = exception?.ToString(),
                     type = baseException?.GetType().FullName,
                     title = formatter(state, exception),
-                    data = exception?.ToDataList(),
+                    data = Data(exception),
                     severity = LogLevelToSeverity(logLevel),
                     source = baseException?.Source,
                     hostname = Environment.MachineName,
                     application = options.Application,
                 });
+        }
+
+        private List<Item> Data(Exception exception)
+        {
+            var res = exception?.ToDataList() ?? new List<Item>();
+            res.Add(new Item("X-ELMAHIO-isBlazor", $"true"));
+            return res;
         }
 
         private string LogLevelToSeverity(LogLevel logLevel)
