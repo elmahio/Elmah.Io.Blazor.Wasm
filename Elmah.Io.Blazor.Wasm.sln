@@ -14,7 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\ci.yml = .github\workflows\ci.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Blazor.Wasm.Example60", "samples\Elmah.Io.Blazor.Wasm.Example60\Elmah.Io.Blazor.Wasm.Example60.csproj", "{E13E770B-4862-4EFD-809F-A2EA643BC3A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Blazor.Wasm.Example60", "samples\Elmah.Io.Blazor.Wasm.Example60\Elmah.Io.Blazor.Wasm.Example60.csproj", "{E13E770B-4862-4EFD-809F-A2EA643BC3A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Blazor.Wasm.Example80", "samples\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80.csproj", "{78034527-1A83-4B76-884E-1FDE4D00DEC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +32,10 @@ Global
 		{E13E770B-4862-4EFD-809F-A2EA643BC3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E13E770B-4862-4EFD-809F-A2EA643BC3A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E13E770B-4862-4EFD-809F-A2EA643BC3A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78034527-1A83-4B76-884E-1FDE4D00DEC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78034527-1A83-4B76-884E-1FDE4D00DEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78034527-1A83-4B76-884E-1FDE4D00DEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78034527-1A83-4B76-884E-1FDE4D00DEC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8F5004D6-381D-4D12-8A4A-44DFD387D67E} = {D2297C72-FCC2-463C-8692-125A93FCA512}
 		{E13E770B-4862-4EFD-809F-A2EA643BC3A4} = {6AE2FCB9-CFE8-4462-8B52-52459B5BDCBA}
+		{78034527-1A83-4B76-884E-1FDE4D00DEC6} = {6AE2FCB9-CFE8-4462-8B52-52459B5BDCBA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E2DF514-FB7B-4D7D-95F0-84BBCEF70A15}
