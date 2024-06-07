@@ -5,37 +5,25 @@ namespace Elmah.Io.Blazor.Wasm
     /// <summary>
     /// Represents a key value pair.
     /// </summary>
-    public class Item
+    /// <remarks>
+    /// Initializes a new instance of the Item class.
+    /// </remarks>
+    /// <param name="key">The key of the item.</param>
+    /// <param name="value">The value of the item.</param>
+    public class Item(string key = default, string value = default)
     {
-        /// <summary>
-        /// Initializes a new instance of the Item class.
-        /// </summary>
-        public Item()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the Item class.
-        /// </summary>
-        /// <param name="key">The key of the item.</param>
-        /// <param name="value">The value of the item.</param>
-        public Item(string key = default, string value = default)
-        {
-            Key = key;
-            Value = value;
-        }
 
         /// <summary>
         /// Gets or sets the key of the item.
         /// </summary>
         [JsonPropertyName("key")]
-        public string Key { get; set; }
+        public string Key { get; set; } = key;
 
         /// <summary>
         /// Gets or sets the value of the item.
         /// </summary>
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string Value { get; set; } = value;
 
     }
 }

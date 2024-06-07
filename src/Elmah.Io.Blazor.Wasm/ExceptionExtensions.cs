@@ -19,13 +19,13 @@ namespace Elmah.Io.Blazor.Wasm
         /// </summary>
         public static List<Item> ToDataList(this Exception exception)
         {
-            if (exception == null) return null;
+            if (exception == null) return [];
 
             var result = exception.Iterate();
             var dataItems = new List<Item>(result.Items)
             {
-                new Item("X-ELMAHIO-EXCEPTIONINSPECTOR", JsonSerializer.Serialize(result.Exception)),
-                new Item("X-ELMAHIO-FRAMEWORKDESCRIPTION", System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription)
+                new("X-ELMAHIO-EXCEPTIONINSPECTOR", JsonSerializer.Serialize(result.Exception)),
+                new("X-ELMAHIO-FRAMEWORKDESCRIPTION", System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription)
             };
             return dataItems;
         }
@@ -35,15 +35,17 @@ namespace Elmah.Io.Blazor.Wasm
             // Don't iterate more than 10 nested exceptions
             if (level > 10) return null;
 
-            var exceptionModel = new ExceptionModel();
-            exceptionModel.Message = exception.Message;
-            exceptionModel.Type = exception.GetType().FullName;
+            var exceptionModel = new ExceptionModel
+            {
+                Message = exception.Message,
+                Type = exception.GetType().FullName,
 #if NETSTANDARD2_0 || NETSTANDARD2_0_OR_GREATER || NET45 || NET46 || NET461
-            exceptionModel.TargetSite = exception.TargetSite?.ToString();
+                TargetSite = exception.TargetSite?.ToString(),
 #endif
-            exceptionModel.Source = exception.Source;
-            exceptionModel.HResult = exception.HResult;
-            exceptionModel.StackTrace = exception.StackTrace;
+                Source = exception.Source,
+                HResult = exception.HResult,
+                StackTrace = exception.StackTrace
+            };
             var result = new List<Item>();
 
             var input = exception
@@ -52,7 +54,7 @@ namespace Elmah.Io.Blazor.Wasm
                 .Cast<object>()
                 .Where(k => !string.IsNullOrWhiteSpace(k.ToString()));
 
-            if (input != null && input.Count() > 0)
+            if (input.Any())
             {
                 exceptionModel.Data = input.Select(i => new KeyValuePair<string, string>(i.ToString(), Value(exception.Data, i))).ToList();
                 result.AddRange(input
@@ -118,13 +120,10 @@ namespace Elmah.Io.Blazor.Wasm
         private static List<Item> ExceptionSpecificItems(Exception e, ExceptionModel ex)
         {
             var result = new List<Item>();
-            if (e is ArgumentException ae)
+            if (e is ArgumentException ae && !string.IsNullOrWhiteSpace(ae.ParamName))
             {
-                if (!string.IsNullOrWhiteSpace(ae.ParamName))
-                {
-                    result.Add(new Item { Key = ae.ItemName(nameof(ae.ParamName)), Value = ae.ParamName });
-                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(ae.ParamName), ae.ParamName));
-                }
+                result.Add(new Item { Key = ae.ItemName(nameof(ae.ParamName)), Value = ae.ParamName });
+                ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(ae.ParamName), ae.ParamName));
             }
 
             if (e is BadImageFormatException bife)
@@ -141,13 +140,10 @@ namespace Elmah.Io.Blazor.Wasm
                 }
             }
 
-            if (e is TaskCanceledException tce)
+            if (e is TaskCanceledException tce && tce.CancellationToken != CancellationToken.None)
             {
-                if (tce.CancellationToken != CancellationToken.None)
-                {
-                    result.Add(new Item { Key = tce.ItemName(nameof(tce.CancellationToken.IsCancellationRequested)), Value = tce.CancellationToken.IsCancellationRequested.ToString() });
-                    ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(tce.CancellationToken.IsCancellationRequested), tce.CancellationToken.IsCancellationRequested.ToString()));
-                }
+                result.Add(new Item { Key = tce.ItemName(nameof(tce.CancellationToken.IsCancellationRequested)), Value = tce.CancellationToken.IsCancellationRequested.ToString() });
+                ex.ExceptionSpecific.Add(new KeyValuePair<string, string>(nameof(tce.CancellationToken.IsCancellationRequested), tce.CancellationToken.IsCancellationRequested.ToString()));
             }
 
             if (e is FileNotFoundException fnfe)
@@ -205,9 +201,9 @@ namespace Elmah.Io.Blazor.Wasm
             public int HResult { get; set; }
             public string TargetSite { get; set; }
             public string Source { get; set; }
-            public List<ExceptionModel> Inners { get; set; } = new List<ExceptionModel>();
-            public List<KeyValuePair<string, string>> Data { get; set; } = new List<KeyValuePair<string, string>>();
-            public List<KeyValuePair<string, string>> ExceptionSpecific { get; set; } = new List<KeyValuePair<string, string>>();
+            public List<ExceptionModel> Inners { get; set; } = [];
+            public List<KeyValuePair<string, string>> Data { get; set; } = [];
+            public List<KeyValuePair<string, string>> ExceptionSpecific { get; set; } = [];
         }
 
         class IterateExceptionResult

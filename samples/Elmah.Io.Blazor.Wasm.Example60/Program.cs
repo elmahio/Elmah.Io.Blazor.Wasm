@@ -15,6 +15,7 @@ builder.Logging.AddElmahIo(o =>
     o.ApiKey = "API_KEY";
     o.LogId = new Guid("LOG_ID");
 
+#pragma warning disable S125 // Sections of code should not be commented out
     // Optional application name to set on all messages.
     //o.Application = "Blazor WASM 6.0 elmah.io sample";
 
@@ -29,6 +30,7 @@ builder.Logging.AddElmahIo(o =>
     //{
     //    return msg.Detail != null && msg.Detail.Contains("Attempted");
     //};
+#pragma warning restore S125 // Sections of code should not be commented out
 });
 
 await builder.Build().RunAsync();

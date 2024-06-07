@@ -9,19 +9,13 @@ namespace Elmah.Io.Blazor.Wasm
     /// <summary>
     /// Implementation of Microsoft.Extensions.Logging's ILogger interface that log messages to elmah.io.
     /// </summary>
-    public class ElmahIoLogger : ILogger
+    /// <remarks>
+    /// Create a new instance of the logger. You typically don't want to call this constructor but rather call the AddElmahIo method.
+    /// </remarks>
+    public class ElmahIoLogger(HttpClient httpClient, ElmahIoBlazorOptions options) : ILogger
     {
-        private readonly HttpClient httpClient;
-        private readonly ElmahIoBlazorOptions options;
-
-        /// <summary>
-        /// Create a new instance of the logger. You typically don't want to call this constructor but rather call the AddElmahIo method.
-        /// </summary>
-        public ElmahIoLogger(HttpClient httpClient, ElmahIoBlazorOptions options)
-        {
-            this.httpClient = httpClient;
-            this.options = options;
-        }
+        private readonly HttpClient httpClient = httpClient;
+        private readonly ElmahIoBlazorOptions options = options;
 
         /// <summary>
         /// Scopes are currently not supported for this logger.
@@ -69,30 +63,23 @@ namespace Elmah.Io.Blazor.Wasm
 
         private List<Item> Data(Exception exception)
         {
-            var res = exception?.ToDataList() ?? new List<Item>();
+            var res = exception?.ToDataList() ?? [];
             res.Add(new Item("X-ELMAHIO-isBlazor", $"true"));
             return res;
         }
 
         private string LogLevelToSeverity(LogLevel logLevel)
         {
-            switch (logLevel)
+            return logLevel switch
             {
-                case LogLevel.Critical:
-                    return "Fatal";
-                case LogLevel.Debug:
-                    return "Debug";
-                case LogLevel.Error:
-                    return "Error";
-                case LogLevel.Information:
-                    return "Information";
-                case LogLevel.Trace:
-                    return "Verbose";
-                case LogLevel.Warning:
-                    return "Warning";
-                default:
-                    return "Information";
-            }
+                LogLevel.Critical => "Fatal",
+                LogLevel.Debug => "Debug",
+                LogLevel.Error => "Error",
+                LogLevel.Information => "Information",
+                LogLevel.Trace => "Verbose",
+                LogLevel.Warning => "Warning",
+                _ => "Information",
+            };
         }
     }
 }

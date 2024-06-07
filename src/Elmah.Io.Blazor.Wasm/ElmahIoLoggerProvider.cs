@@ -7,19 +7,13 @@ namespace Elmah.Io.Blazor.Wasm
     /// <summary>
     /// An ILoggerProvider for registering the elmah.io logger.
     /// </summary>
-    public class ElmahIoLoggerProvider : ILoggerProvider
+    /// <remarks>
+    /// Create a new instance using the provided HTTP client and options.
+    /// </remarks>
+    public sealed class ElmahIoLoggerProvider(HttpClient httpClient, IOptions<ElmahIoBlazorOptions> options) : ILoggerProvider
     {
-        private readonly HttpClient httpClient;
-        private readonly ElmahIoBlazorOptions options;
-
-        /// <summary>
-        /// Create a new instance using the provided HTTP client and options.
-        /// </summary>
-        public ElmahIoLoggerProvider(HttpClient httpClient, IOptions<ElmahIoBlazorOptions> options)
-        {
-            this.httpClient = httpClient;
-            this.options = options.Value;
-        }
+        private readonly HttpClient httpClient = httpClient;
+        private readonly ElmahIoBlazorOptions options = options.Value;
 
         /// <inheritdoc/>
         public ILogger CreateLogger(string categoryName)
