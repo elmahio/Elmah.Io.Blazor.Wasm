@@ -9,14 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6AE2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Blazor.Wasm", "src\Elmah.Io.Blazor.Wasm\Elmah.Io.Blazor.Wasm.csproj", "{8F5004D6-381D-4D12-8A4A-44DFD387D67E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A861FB84-C4F5-4D1A-B97A-8495176557DE}"
-	ProjectSection(SolutionItems) = preProject
-		.github\workflows\ci.yml = .github\workflows\ci.yml
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Blazor.Wasm.Example60", "samples\Elmah.Io.Blazor.Wasm.Example60\Elmah.Io.Blazor.Wasm.Example60.csproj", "{E13E770B-4862-4EFD-809F-A2EA643BC3A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Blazor.Wasm.Example80", "samples\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80.csproj", "{78034527-1A83-4B76-884E-1FDE4D00DEC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Blazor.Wasm.Example80", "samples\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80.csproj", "{78034527-1A83-4B76-884E-1FDE4D00DEC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
