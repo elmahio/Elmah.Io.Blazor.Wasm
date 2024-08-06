@@ -1,3 +1,4 @@
+#pragma warning disable S125 // Sections of code should not be commented out
 using Elmah.Io.Blazor.Wasm;
 using Elmah.Io.Blazor.Wasm.Example80;
 using Microsoft.AspNetCore.Components.Web;
@@ -15,7 +16,6 @@ builder.Logging.AddElmahIo(o =>
     o.ApiKey = "API_KEY";
     o.LogId = new Guid("LOG_ID");
 
-#pragma warning disable S125 // Sections of code should not be commented out
     // Optional application name to set on all messages.
     //o.Application = "Blazor WASM 8.0 elmah.io sample";
 
@@ -30,7 +30,11 @@ builder.Logging.AddElmahIo(o =>
     //{
     //    return msg.Detail != null && msg.Detail.Contains("Attempted");
     //};
-#pragma warning restore S125 // Sections of code should not be commented out
 });
 
+// Elmah.Io.Blazor.Wasm can also be configured from appsettings.json like this:
+//builder.Services.Configure<ElmahIoBlazorOptions>(builder.Configuration.GetSection("ElmahIo"));
+//builder.Logging.AddElmahIo();
+
 await builder.Build().RunAsync();
+#pragma warning restore S125 // Sections of code should not be commented out
