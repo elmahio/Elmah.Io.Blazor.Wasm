@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Blazor.Wasm.Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Blazor.Wasm.Example80", "samples\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80\Elmah.Io.Blazor.Wasm.Example80.csproj", "{78034527-1A83-4B76-884E-1FDE4D00DEC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Blazor.Wasm.Example90", "samples\Elmah.Io.Blazor.Wasm.Example90\Elmah.Io.Blazor.Wasm.Example90.csproj", "{3FDDCC8C-36AB-42F0-A00F-042C6C181FD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{78034527-1A83-4B76-884E-1FDE4D00DEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78034527-1A83-4B76-884E-1FDE4D00DEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78034527-1A83-4B76-884E-1FDE4D00DEC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FDDCC8C-36AB-42F0-A00F-042C6C181FD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FDDCC8C-36AB-42F0-A00F-042C6C181FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FDDCC8C-36AB-42F0-A00F-042C6C181FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FDDCC8C-36AB-42F0-A00F-042C6C181FD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{8F5004D6-381D-4D12-8A4A-44DFD387D67E} = {D2297C72-FCC2-463C-8692-125A93FCA512}
 		{E13E770B-4862-4EFD-809F-A2EA643BC3A4} = {6AE2FCB9-CFE8-4462-8B52-52459B5BDCBA}
 		{78034527-1A83-4B76-884E-1FDE4D00DEC6} = {6AE2FCB9-CFE8-4462-8B52-52459B5BDCBA}
+		{3FDDCC8C-36AB-42F0-A00F-042C6C181FD5} = {6AE2FCB9-CFE8-4462-8B52-52459B5BDCBA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E2DF514-FB7B-4D7D-95F0-84BBCEF70A15}
