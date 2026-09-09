@@ -1,5 +1,5 @@
 using Elmah.Io.Blazor.Wasm;
-using Elmah.Io.Blazor.Wasm.Example60;
+using Elmah.Io.Blazor.Wasm.Example.Net10;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -17,7 +17,7 @@ builder.Logging.AddElmahIo(o =>
 
 #pragma warning disable S125 // Sections of code should not be commented out
     // Optional application name to set on all messages.
-    //o.Application = "Blazor WASM 6.0 elmah.io sample";
+    //o.Application = "Blazor WASM 10.0 elmah.io sample";
 
     // Optional OnMessage callback that can be used to decorate messages before sent to elmah.io.
     //o.OnMessage = msg =>

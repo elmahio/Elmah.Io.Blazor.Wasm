@@ -14,7 +14,6 @@ namespace Elmah.Io.Blazor.Wasm
         /// <summary>
         /// Add Elmah.Io.Blazor.Wasm with the specified options.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S1075:URIs should not be hardcoded", Justification = "The URL will never be different")]
         public static ILoggingBuilder AddElmahIo(this ILoggingBuilder loggingBuilder, Action<ElmahIoBlazorOptions> configure)
         {
             loggingBuilder.AddElmahIo();
@@ -32,7 +31,7 @@ namespace Elmah.Io.Blazor.Wasm
         {
             loggingBuilder.Services.AddSingleton<ILoggerProvider, ElmahIoLoggerProvider>(services =>
             {
-                var httpClient = new HttpClient { BaseAddress = new Uri("https://api.elmah.io") };
+                var httpClient = new HttpClient();
                 var options = services.GetService<IOptions<ElmahIoBlazorOptions>>();
                 return new ElmahIoLoggerProvider(httpClient, options);
             });

@@ -14,6 +14,9 @@ namespace Elmah.Io.Blazor.Wasm
     /// </remarks>
     public class ElmahIoLogger(HttpClient httpClient, ElmahIoBlazorOptions options) : ILogger
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S1075:URIs should not be hardcoded", Justification = "The URL will never be different")]
+        internal const string DefaultHost = "https://v4.api.elmah.io";
+
         private readonly HttpClient httpClient = httpClient;
         private readonly ElmahIoBlazorOptions options = options;
 
@@ -43,7 +46,7 @@ namespace Elmah.Io.Blazor.Wasm
                 DateTime = DateTime.UtcNow,
                 Detail = exception?.ToString(),
                 Type = baseException?.GetType().FullName,
-                Title = formatter(state, exception),
+                Title = state.Title(formatter, exception),
                 Data = Data(exception),
                 Severity = LogLevelToSeverity(logLevel),
                 Source = baseException?.Source,
@@ -58,7 +61,18 @@ namespace Elmah.Io.Blazor.Wasm
 
             options.OnMessage?.Invoke(createMessage);
 
-            httpClient.PostAsJsonAsync($"https://api.elmah.io/v3/messages/{options.LogId}?api_key={options.ApiKey}", createMessage);
+            httpClient.PostAsJsonAsync($"{DefaultHost}/messages/{options.LogId}?api_key={options.ApiKey}", createMessage)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        Console.WriteLine($"elmah.io: failed to log message: {task.Exception?.GetBaseException().Message}");
+                    }
+                    else if (!task.Result.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"elmah.io: failed to log message: {(int)task.Result.StatusCode} {task.Result.StatusCode}");
+                    }
+                });
         }
 
         private List<Item> Data(Exception exception)
