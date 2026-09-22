@@ -1,0 +1,14 @@
+@page "/interactiveservererror"
+@rendermode InteractiveServer
+
+<h1>Interactive Server error</h1>
+
+<button @onclick="Throw">Throw</button>
+
+@code {
+    private void Throw()
+    {
+        object text = "Text";
+        var cast = (int)text;
+    }
+}

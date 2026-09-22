@@ -1,0 +1,11 @@
+@page "/staticerror"
+
+<h1>Static SSR error</h1>
+
+@code {
+    protected override void OnInitialized()
+    {
+        object text = "Text";
+        var cast = (int)text;
+    }
+}

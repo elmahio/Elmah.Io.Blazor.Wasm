@@ -1,0 +1,14 @@
+@page "/interactiveautoerror"
+@rendermode InteractiveAuto
+
+<h1>Interactive Auto error</h1>
+
+<button @onclick="Throw">Throw</button>
+
+@code {
+    private void Throw()
+    {
+        object text = "Text";
+        var cast = (int)text;
+    }
+}

@@ -1,0 +1,14 @@
+@page "/interactivewebassemblyerror"
+@rendermode InteractiveWebAssembly
+
+<h1>Interactive WebAssembly error</h1>
+
+<button @onclick="Throw">Throw</button>
+
+@code {
+    private void Throw()
+    {
+        object text = "Text";
+        var cast = (int)text;
+    }
+}

@@ -1,0 +1,14 @@
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Elmah.Io.BlazorWebApp.Example.Net10</h1>
+
+<p>Each link below throws an exception from a component using a different Blazor Web App render mode. All of them should end up logged to elmah.io.</p>
+
+<ul>
+    <li><a href="staticerror">Static SSR (server, no interactivity)</a></li>
+    <li><a href="interactiveservererror">Interactive Server</a></li>
+    <li><a href="interactivewebassemblyerror">Interactive WebAssembly</a></li>
+    <li><a href="interactiveautoerror">Interactive Auto</a></li>
+</ul>
